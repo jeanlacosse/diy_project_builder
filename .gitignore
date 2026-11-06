@@ -3,3 +3,10 @@ CLAUDE.md
 PROJECT.md
 notes.md
 */span_tables*
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/

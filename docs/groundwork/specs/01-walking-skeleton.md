@@ -1,6 +1,6 @@
 # Spec 01: Walking skeleton
 
-_Status: draft_ · _Last updated: 2026-11-05_
+_Status: approved_ · _Last updated: 2026-11-05_
 Backlog row: 01 · Depends on: none · Size: M · Type: build
 
 ## Outcome
@@ -14,7 +14,7 @@ Backlog row: 01 · Depends on: none · Size: M · Type: build
 ## Requirements
 | ID | Requirement |
 |---|---|
-| R1 | The project is a uv-managed Python 3.12 package `shedguide` under `src/shedguide/`, with a `shedguide` console script, and the four DESIGN.md check commands run and pass. |
+| R1 | The project is a uv-managed Python 3.13 package `shedguide` under `src/shedguide/`, with a `shedguide` console script (entry point `shedguide.cli:run`, a thin wrapper that exits with the code from `main()`), and the four DESIGN.md check commands run and pass. |
 | R2 | `spec.py` defines `ShedSpec` (every field Optional, default `None`, so a missing value is never a guess), `FramingPlan` and `PartsList` as Pydantic models. `ShedSpec` has only placeholder fields: `project_type`, `width_ft`, `length_ft`. Slice 04 replaces them with the real envelope. |
 | R3 | `llm.py` defines an `LLMClient` interface and a `FakeLLM` that returns a canned tool-use-shaped payload. It imports no `boto3` and makes no network call. |
 | R4 | `extract.py` turns a chat line into a `ShedSpec` using an `LLMClient`. The payload is validated by Pydantic; an invalid payload raises `ExtractionError`, never a partial spec. |
@@ -54,7 +54,7 @@ Backlog row: 01 · Depends on: none · Size: M · Type: build
 - Property checks on parts (slice 07b), stud and rafter members, ask/refuse behaviour.
 - Streamlit and any UI (decision 008).
 
-**Do not touch:** `docs/gw/DESIGN.md`, `docs/gw/IDEA.md`, decisions 001 to 008, `groundwork/`, `PROJECT.md`, `notes.md`. (Slice 01 adds files only and edits nothing existing, apart from the BACKLOG row on approval.)
+**Do not touch:** `docs/groundwork/DESIGN.md`, `docs/groundwork/IDEA.md`, decisions 001 to 008, `groundwork/`, `PROJECT.md`, `notes.md`. (Slice 01 adds files only and edits nothing existing, apart from the BACKLOG row on approval.)
 
 ## Approach
 Follow the DESIGN.md component layout and paths exactly ([001](../decisions/001-python-pydantic-uv.md) toolchain; [005](../decisions/005-own-eval-harness.md) harness shape; [006](../decisions/006-csv-span-tables.md) CSV plus provenance note). The LLM is behind a small interface so `FakeLLM` and the future Bedrock client are interchangeable. The fake returns the same payload shape the Bedrock tool-use path will, so extraction validates it the same way. Deterministic code only sees a validated `ShedSpec`. The stub table has one row (a made-up joist size, spacing and max span) so lookup, the out-of-range path and row provenance all exist; its `.md` and every CLI output say the data is fake. Parts: joists run across the width, count = `ceil(length / spacing) + 1`. These formulas are skeleton placeholders, not framing rules, and slice 07a/07b replace them (assumption A1).
@@ -78,7 +78,7 @@ Assumptions to confirm at approval:
 ## Tests
 | Test ID | Covers | Kind | What it asserts |
 |---|---|---|---|
-| T1 | R1 | happy | The `shedguide` console script entry point resolves to `cli.main`, and the package imports on Python 3.12 |
+| T1 | R1 | happy | The `shedguide` console script entry point resolves to `cli.run`, and the package imports on Python 3.13 |
 | T2 | R2 | happy | A `ShedSpec` built with no arguments has every field `None` |
 | T3 | R2 | unhappy | A `ShedSpec` rejects a wrong type (e.g. `width_ft="abc"`) and a negative width |
 | T4 | R3 | happy | `FakeLLM` returns the same canned payload for any input, and the payload validates as a `ShedSpec` |
@@ -112,4 +112,25 @@ Assumptions to confirm at approval:
 Self-check (no `--deep` review): every R1 to R12 has at least one T; every task's files appear in Scope; nothing contradicts DESIGN.md's component layout or decisions 001 to 008. Not independently reviewed. The slice handles no user input beyond one typed line, no auth, money or external files, so `--deep` is not recommended.
 
 ## Check result
-Filled in by gw-check.
+2026-11-05: **READY**. Re-check after R1/T1 were amended for Python 3.13 and `cli:run` (decision 010).
+
+Check commands: `uv run pytest` 22 passed, `uv run ruff check .` pass, `uv run ruff format --check .` pass, `uv run mypy src` pass.
+
+| R | Status | Evidence |
+|---|---|---|
+| R1 | met | T1; `requires-python >=3.13`, script `shedguide.cli:run`, all four checks pass |
+| R2 | met | T2, T3 |
+| R3 | met | T4 |
+| R4 | met | T5, T6 |
+| R5 | met | T7, T8, T9 |
+| R6 | met | T10 |
+| R7 | met | T11, T12 |
+| R8 | met | T13, T14 |
+| R9 | met | T15, T16 |
+| R10 | met | T17, T18 |
+| R11 | met | T19, T20, T21 |
+| R12 | met | T22 |
+
+Blockers: none. The first check (earlier today) was NOT READY only because R1/T1 said Python 3.12 and `cli.main`.
+
+Notes (not blocking): `evals/results/2026-11-05_skeleton-0.json` has no Scope row (A2 covers it); `pyproject.toml` adds hatchling and a pytest `pythonpath` setting not named in DESIGN.md; `import sys` sits inside `cli.main`; T21 may not assert the printed message; the Do-not-touch list now uses the `docs/groundwork/` path; decision 001, DESIGN.md and spec 01 were edited with the owner's approval (decision 010).

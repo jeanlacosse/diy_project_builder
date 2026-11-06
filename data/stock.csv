@@ -1,0 +1,6 @@
+# FAKE DATA: stub stock lengths for the walking skeleton. Not a real supplier list.
+stock_size,stock_length_ft
+2x8,8
+2x8,10
+2x8,12
+2x8,16

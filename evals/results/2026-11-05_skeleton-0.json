@@ -1,0 +1,13 @@
+{
+  "prompt_version": "skeleton-0",
+  "model_id": "fake-model",
+  "date": "2026-11-05",
+  "cases": [
+    {
+      "id": "canned-1",
+      "split": "dev",
+      "spec_match": true,
+      "plan_match": true
+    }
+  ]
+}
