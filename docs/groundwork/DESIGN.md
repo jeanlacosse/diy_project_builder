@@ -3,7 +3,7 @@
 _Status: agreed_ · _Last updated: 2026-11-05_ · Built from [IDEA.md](IDEA.md)
 
 ## First gate: table-source spike
-Q5 (which public reference supplies the tables, and its license), Q6 (supported envelope) and assumptions A3/A4 are unresolved. **The Data and Components sections below are provisional until the spike passes.** The spike is the first slice, time-boxed to about 4 hours. It passes when all of these exist:
+Q5 (which public reference supplies the tables, and its license), Q6 (supported envelope) and assumptions A3/A4 are unresolved. **The Data and Components sections below are provisional until the spike passes.** The spike is the first slice that touches real data or services ([009](decisions/009-skeleton-before-spike.md): a fakes-only skeleton, slice 01, comes before it), time-boxed to about 4 hours. It passes when all of these exist:
 - a named reference and its license, checked;
 - tables exist in that reference for all three member types (wall studs, floor joists, rafters). If one is missing, narrow the parts scope and reword IDEA criteria 3 and 5 before going on;
 - the supported envelope written in one paragraph;
@@ -32,7 +32,7 @@ Framing members only: wall studs, floor joists and rafters, with sizes and spaci
 ## Stack
 | Layer | Choice | Decision |
 |---|---|---|
-| Language / runtime | Python 3.12, uv, Pydantic | [001](decisions/001-python-pydantic-uv.md) |
+| Language / runtime | Python 3.13, uv, Pydantic | [001](decisions/001-python-pydantic-uv.md), [010](decisions/010-python-3-13.md) |
 | LLM | Claude Sonnet 5.5 on Amazon Bedrock (boto3 Converse, tool use) | [002](decisions/002-bedrock-llm-access.md), [007](decisions/007-sonnet-5-5-default-model.md) |
 | Framework / UI | CLI or notebook for slice 1; Streamlit chat added after the criteria 1-5 numbers exist | [003](decisions/003-streamlit-chat-ui.md), [008](decisions/008-defer-ui-cli-first.md) |
 | Storage | Files: CSV tables, JSONL evals; Chroma local index (slice 2 dependency only, not installed before then) | [004](decisions/004-local-vector-store.md), [006](decisions/006-csv-span-tables.md) |
@@ -125,7 +125,7 @@ Project-wide rules the build must follow.
 ## Decisions
 | # | Title | Status |
 |---|---|---|
-| [001](decisions/001-python-pydantic-uv.md) | Python, Pydantic contract, uv toolchain | accepted |
+| [001](decisions/001-python-pydantic-uv.md) | Python, Pydantic contract, uv toolchain | accepted (Python version superseded by 010) |
 | [002](decisions/002-bedrock-llm-access.md) | Bedrock for LLM access | accepted |
 | [003](decisions/003-streamlit-chat-ui.md) | Streamlit web chat | accepted; deferred by 008 (timing only) |
 | [004](decisions/004-local-vector-store.md) | Local file-based vector store (Chroma) | accepted |
@@ -133,3 +133,5 @@ Project-wide rules the build must follow.
 | [006](decisions/006-csv-span-tables.md) | Span and sizing tables as CSV with provenance | proposed (until the spike passes) |
 | [007](decisions/007-sonnet-5-5-default-model.md) | Start with Claude Sonnet 5.5 on Bedrock | proposed (until the spike passes) |
 | [008](decisions/008-defer-ui-cli-first.md) | Defer the UI; slice 1 runs from a CLI or notebook | accepted |
+| [009](decisions/009-skeleton-before-spike.md) | Fakes-only walking skeleton before the table-source spike | accepted |
+| [010](decisions/010-python-3-13.md) | Python 3.13 instead of 3.12 | accepted |
